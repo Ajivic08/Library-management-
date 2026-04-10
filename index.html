@@ -4,68 +4,143 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #submit-book{
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius:5px ;
+        }
+
+        #form{
+            background-color: white;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+            /* display: none; */
+        }
+
+        #form input{
+            display: block;
+            margin: 10px 0;
+            padding: 8px;
+            width: 10%;
+            text-align: center;
+        }
+
+        #book-list{
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px,  1fr));
+            gap: 15px;
+        }
+        
+        .book-card{
+            background: rgb(55, 211, 49);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .remove-book{
+            background: red;
+            color: white;
+           border: 1px solid white;
+            padding: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .read{
+            background: blue;
+            color: white;
+            border: 1px solid white;
+            padding: 5px;
+            margin-top: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .add{
+             background: orangered;
+            color: white;
+            border: 1px solid white;
+            padding: 5px;
+            margin-top: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+
+        }
+    </style>
 </head>
 <body>
 
-   <form id="form"> 
+   <form id="form">
     <input type="text" name="title" id="title" placeholder="title"/>
     <input type="text" name="author" id="author" placeholder="author"/>
     <input type="number" name="pages" id="pages" placeholder="Number of pages"/>
     <label for="read">Read?</label>
     <input type="checkbox" id="read"/>
     <button id="submit-book">Add book</button>
-
-
    </form>
 
-   <div id="book-list"></div>
+    <div id="book-list"></div>
+
+
+    
 </body>
 
-<script src="index.js"> let myLibrary = [];
+<script>
+    let myLibrary = [];
 
-function Book(title, author, pages, read){
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.read = read;
-    this.id = crypto.randomUUID();
+    function Book (title, author, pages, read){
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.read = read;
+        this.id = crypto.randomUUID();
+    }
 
-}
-                                                
-document.getElementById("submit-book").addEventListener("click",  function (e) {
-    e.preventDefault();
+    document.getElementById("submit-book").addEventListener("click", function(e) {
+        e.preventDefault();
 
-
-    const title = document.getElementById("title").value;
-     const author = document.getElementById("author").value;
-      const pages = document.getElementById("pages").value;
-       const read = document.getElementById("read").checked;
+        const title = document.getElementById("title").value;
+        const author = document.getElementById("author").value;
+        const pages = document.getElementById("pages").value;
+        const read = document.getElementById("read").checked;
 
     
 
 
-          const newBook = new Book(title, author, pages, read);
+    const newBook = new Book (title, author, pages, read);
 
-       myLibrary.push(newBook);
+    myLibrary.push(newBook);
 
-       displayBooks();
+     displayBooks();
+     document.getElementById("form").style.display = "none";
 
-       document.getElementById("form").style.display = "none";
+    });
 
-});
+     function displayBooks(){
+        const bookList = document.getElementById("book-list");
+        bookList.innerHTML = "";
 
+        myLibrary.forEach(book => {
+            const bookCard = document.createElement("div");
+            bookCard.classList.add("book-card");
+            bookCard.dataset.id =  book.id;
 
-function displayBooks(){
-    const bookList = document.getElementById("book-list");
-    bookList.innerHTML = "";
-
-
-    myLibrary.forEach(book => {
-        const bookCard = document.createElement("div");
-        bookCard.classList.add("book-card");
-        bookCard.dataset.id = book.id;
-
-        bookCard.innerHTML = `
+            bookCard.innerHTML = `
         <h3>${book.title}</h3>
         <p>by ${book.author}</p>
         <p>${book.pages} pages</p>
@@ -73,11 +148,12 @@ function displayBooks(){
         <button class="remove-book">Remove</button>
         <button class="read">Read</button>
         <button class="add">Add</button>
-        `;
+            `;
 
-       bookList.appendChild(bookCard);
-    });
-}
+            bookList.appendChild(bookCard);
+        });  
+
+     }
 
 document.getElementById("book-list").addEventListener("click", function (e) {
     if (e.target.classList.contains("remove-book")) {
@@ -109,5 +185,7 @@ document.getElementById("book-list").addEventListener("click", function (e) {
 document.getElementById("book-list").addEventListener("click", function () {
     document.getElementById("form").style.display = "block";
 });
+
+
 </script>
 </html>
