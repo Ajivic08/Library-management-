@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+   <form id="form"> 
+    <input type="text" name="title" id="title" placeholder="title"/>
+    <input type="text" name="author" id="author" placeholder="author"/>
+    <input type="number" name="pages" id="pages" placeholder="Number of pages"/>
+    <label for="read">Read?</label>
+    <input type="checkbox" id="read"/>
+    <button id="submit-book">Add book</button>
+
+
+   </form>
+
+   <div id="book-list"></div>
+</body>
+
+<script src="index.js"> let myLibrary = [];
+
+function Book(title, author, pages, read){
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+    this.id = crypto.randomUUID();
+
+}
+                                                
+document.getElementById("submit-book").addEventListener("click",  function (e) {
+    e.preventDefault();
+
+
+    const title = document.getElementById("title").value;
+     const author = document.getElementById("author").value;
+      const pages = document.getElementById("pages").value;
+       const read = document.getElementById("read").checked;
+
+    
+
+
+          const newBook = new Book(title, author, pages, read);
+
+       myLibrary.push(newBook);
+
+       displayBooks();
+
+       document.getElementById("form").style.display = "none";
+
+});
+
+
+function displayBooks(){
+    const bookList = document.getElementById("book-list");
+    bookList.innerHTML = "";
+
+
+    myLibrary.forEach(book => {
+        const bookCard = document.createElement("div");
+        bookCard.classList.add("book-card");
+        bookCard.dataset.id = book.id;
+
+        bookCard.innerHTML = `
+        <h3>${book.title}</h3>
+        <p>by ${book.author}</p>
+        <p>${book.pages} pages</p>
+        <p>Read: ${book.read ? "Yes" : "No"}</p>
+        <button class="remove-book">Remove</button>
+        <button class="read">Read</button>
+        <button class="add">Add</button>
+        `;
+
+       bookList.appendChild(bookCard);
+    });
+}
+
+document.getElementById("book-list").addEventListener("click", function (e) {
+    if (e.target.classList.contains("remove-book")) {
+
+        const bookCard = e.target.closest(".book-card");
+        const bookId = bookCard.dataset.id;
+
+        myLibrary = myLibrary.filter(book => book.id !== bookId);
+
+        displayBooks();
+    }
+});
+
+document.getElementById("book-list").addEventListener("click", function (e) {
+
+    if (e.target.classList.contains("read")) {
+
+        const bookCard = e.target.closest(".book-card");
+        const bookId = bookCard.dataset.id;
+
+        const book = myLibrary.find(book => book.id === bookId);
+
+        book.read = !book.read;
+
+        displayBooks();
+    }
+});
+
+document.getElementById("book-list").addEventListener("click", function () {
+    document.getElementById("form").style.display = "block";
+});
+</script>
+</html>
